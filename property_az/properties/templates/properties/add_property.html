@@ -1,0 +1,227 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Property</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            background-image: url("{% static 'uploads/user.jpg' %}");
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            padding-top: 50px;
+        }
+
+        .form-container {
+            background-color: rgba(255, 255, 255, 0.9);
+            padding: 50px;
+            border-radius: 16px;
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
+            max-width: 500px;
+            width: 100%;
+            animation: fadeIn 1s ease-in-out;
+        }
+
+        h3 {
+            margin-bottom: 30px;
+            font-size: 28px;
+            text-align: center;
+            color: #333;
+            font-weight: 700;
+            letter-spacing: 1px;
+            position: relative;
+        }
+
+        h3::after {
+            content: '';
+            display: block;
+            width: 70px;
+            height: 4px;
+            background-color: #3498db;
+            margin: 10px auto 0;
+            border-radius: 2px;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+        }
+
+        input[type="text"], input[type="file"], textarea, select {
+            padding: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            font-size: 16px;
+            width: 100%;
+            box-sizing: border-box;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        input[type="file"] {
+            padding: 10px;
+        }
+
+        input[type="text"]:focus, textarea:focus, select:focus {
+            border-color: #3498db;
+            outline: none;
+            box-shadow: 0 0 10px rgba(52, 152, 219, 0.4);
+        }
+
+        button {
+            padding: 14px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 18px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+            text-align: center;
+        }
+
+        button:hover {
+            background-color: #2980b9;
+            transform: scale(1.05);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        }
+
+        label {
+            font-weight: 600;
+            margin-bottom: 10px;
+            display: block;
+            font-size: 16px;
+            color: #333;
+        }
+
+        .form-container .file-input-label {
+            display: block;
+            margin-bottom: 10px;
+            font-size: 16px;
+            color: #666;
+        }
+
+        .file-input {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .image-preview {
+            display: flex;
+            flex-wrap: wrap;
+            margin-top: 20px;
+        }
+
+        .image-preview img {
+            max-width: 100%;
+            max-height: 500px;
+            object-fit: cover;
+            margin: 5px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Home düyməsi */
+        .home-button {
+            display: inline-block;
+            margin: 20px auto;
+            padding: 10px 20px;
+            font-size: 18px;
+            background: linear-gradient(90deg, #6fa8dc, #4c66a4); 
+            color: #fff;
+            text-decoration: none;
+            border-radius: 30px;
+            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+            transition: all 0.4s ease;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            max-width: 150px;
+            z-index: 1;
+        }
+
+        .home-button i {
+            transition: transform 0.4s ease;
+        }
+
+        .home-button:hover {
+            background: linear-gradient(90deg, #4c66a4, #6fa8dc); 
+            transform: scale(1.05);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .home-button:hover i {
+            transform: rotate(360deg);
+        }
+
+        .home-button i {
+            margin-right: 8px;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="form-container">
+        <h3>Add New Property</h3>
+        <!-- enctype mütləq şəkildə daxil edilməlidir -->
+        <form action="{% url 'web:create-property' %}" method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ form.as_p }}
+            
+            <!-- Şəkil seçmək üçün input sahəsi -->
+            <label for="images">Select Images</label>
+            <input type="file" id="images" name="images" multiple>
+            
+            <!-- Şəkil önizləmə sahəsi -->
+            <div class="image-preview" id="imagePreview"></div>
+
+            <button type="submit">Add Property</button>
+        </form>
+        <a href="{% url 'web:index' %}" class="home-button">
+            <i class="fas fa-home"></i> Home
+        </a>
+    </div>
+
+    <script>
+        document.getElementById('images').addEventListener('change', function(event) {
+            const imagePreviewContainer = document.getElementById('imagePreview');
+            imagePreviewContainer.innerHTML = ''; // Mövcud şəkilləri təmizləyir
+
+            Array.from(event.target.files).forEach(file => {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const img = document.createElement('img');
+                    img.src = e.target.result;
+                    imagePreviewContainer.appendChild(img);
+                };
+                reader.readAsDataURL(file);
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,197 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+    <title>Login - MY PROPERTY.AZ</title>
+    
+    <!-- CSS üslubları birbaşa HTML daxilində -->
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Poppins', sans-serif;
+            height: 100vh;
+            background: linear-gradient(to right, #b3ecff, #80d4ff); /* Daha yumşaq su mavisi */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .login-container {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px); /* Blur effekti */
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            width: 300px;
+            position: relative;
+        }
+
+        .login-container h2 {
+            margin-bottom: 20px;
+            color: #003366;
+            font-size: 28px;
+        }
+
+        .login-container input {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: none;
+            border-radius: 5px;
+            background: rgba(255, 255, 255, 0.5);
+            color: #003366;
+            font-size: 16px;
+            transition: background-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .login-container input:focus {
+            background-color: rgba(255, 255, 255, 0.7);
+            box-shadow: 0 0 10px rgba(0, 51, 102, 0.5);
+        }
+
+        .login-container input::placeholder {
+            color: rgba(0, 51, 102, 0.6);
+        }
+
+        .login-container button {
+            width: 100%;
+            padding: 12px;
+            background-color: #66ccff;
+            color: white;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 20px;
+            opacity: 0.5;
+            transition: opacity 0.3s ease, background-color 0.3s ease;
+        }
+
+        .login-container button.active {
+            opacity: 1;
+            background-color: #4db8ff;
+        }
+
+        .login-container button:hover {
+            background-color: #3399ff;
+        }
+
+        .login-container .forgot-link {
+            margin-top: 10px;
+            display: block;
+            color: #003366;
+            text-decoration: none;
+        }
+
+        .login-container .forgot-link:hover {
+            text-decoration: underline;
+        }
+
+        .remember-me {
+            color: #003366;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .remember-me input {
+            margin-right: 10px;
+        }
+
+        /* Home button üçün CSS */
+        .home-button {
+            display: inline-block;
+            margin: 20px auto;
+            padding: 10px 20px;
+            font-size: 18px;
+            background: linear-gradient(90deg, #6fa8dc, #4c66a4); 
+            color: #fff;
+            text-decoration: none;
+            border-radius: 30px;
+            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+            transition: all 0.4s ease;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            max-width: 150px;
+            z-index: 1;
+        }
+
+        .home-button i {
+            transition: transform 0.4s ease;
+        }
+
+        .home-button:hover {
+            background: linear-gradient(90deg, #4c66a4, #6fa8dc); 
+            transform: scale(1.05);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .home-button:hover i {
+            transform: rotate(360deg);
+        }
+
+        .home-button i {
+            margin-right: 8px;
+        }
+
+    </style>
+</head>
+<body>
+
+    <!-- Login Container -->
+    <div class="login-container">
+        <h2>Login</h2>
+
+        <form method="post" action="{% url 'web:login' %}">
+            {% csrf_token %}
+            <input type="text" id="username" name="username" placeholder="User Name" required>
+            <input type="password" id="password" name="password" placeholder="Password" required>
+
+            <div class="remember-me">
+                <label>
+                    <input type="checkbox" name="remember_me"> Remember Me
+                </label>
+                <a href="#" class="forgot-link">Forgot password?</a>
+            </div>
+
+            <button type="submit" id="submit-button" disabled>Login</button>
+        </form>
+
+        <!-- Home düyməsi -->
+        <a href="{% url 'web:index' %}" class="home-button">
+            <i class="fas fa-home"></i> Home
+        </a>
+    </div>
+
+    <!-- JavaScript Dinamiklik -->
+    <script>
+        const usernameInput = document.getElementById('username');
+        const passwordInput = document.getElementById('password');
+        const submitButton = document.getElementById('submit-button');
+
+        function checkForm() {
+            if (usernameInput.value.trim() !== '' && passwordInput.value.trim() !== '') {
+                submitButton.disabled = false;
+                submitButton.classList.add('active');
+            } else {
+                submitButton.disabled = true;
+                submitButton.classList.remove('active');
+            }
+        }
+
+        // Bütün inputlar üçün event dinləyicisi əlavə edirik
+        usernameInput.addEventListener('input', checkForm);
+        passwordInput.addEventListener('input', checkForm);
+    </script>
+
+</body>
+</html>

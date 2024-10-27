@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="az">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Send Mail</title>
+    <style>
+        /* Bütün ekran üçün gözəl gradient fon */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #74ebd5 0%, #ACB6E5 100%);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            flex-direction: column;
+        }
+
+        .form-container {
+            background-color: rgba(255, 255, 255, 0.9); /* Şəffaf ağ fon */
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15); /* Daha yumşaq kölgə */
+            max-width: 400px;
+            width: 100%;
+            animation: fadeIn 1s ease-in-out; /* Animasiya əlavə edildi */
+            margin-bottom: 20px; /* Form ilə iconlar arasında məsafə */
+        }
+
+        /* Başlıq üçün stil */
+        h3 {
+            margin-bottom: 30px;
+            font-size: 28px;
+            text-align: center;
+            color: #333;
+            font-weight: 600;
+            position: relative;
+        }
+
+        h3::after {
+            content: '';
+            display: block;
+            width: 60px;
+            height: 4px;
+            background-color: #3498db;
+            margin: 10px auto 0 auto;
+            border-radius: 2px;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Input sahələri */
+        input[type="text"], input[type="file"] {
+            padding: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 16px;
+            width: 100%;
+            box-sizing: border-box;
+            transition: border-color 0.3s ease;
+        }
+
+        input[type="text"]:focus {
+            border-color: #3498db;
+            outline: none;
+            box-shadow: 0 0 8px rgba(52, 152, 219, 0.4);
+        }
+
+        /* Düymə */
+        button {
+            padding: 14px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 18px;
+            cursor: not-allowed; /* Əvvəlcə passiv düymə */
+            transition: background-color 0.3s ease, transform 0.3s ease;
+        }
+
+        button:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+        }
+
+        button.active {
+            cursor: pointer;
+            background-color: #3498db;
+        }
+
+        button.active:hover {
+            background-color: #2980b9;
+            transform: scale(1.05); /* Hover zamanı azca böyümə */
+        }
+
+        /* Sosial media iconları üçün stil */
+        .social-icons {
+            text-align: center;
+        }
+
+        .social-icons a {
+            margin: 0 10px;
+            text-decoration: none;
+            color: #333;
+            font-size: 36px; /* Iconların ölçüsünü böyütdüm */
+            transition: color 0.3s ease;
+        }
+
+        .social-icons a:hover {
+            color: #3498db;
+        }
+
+        /* Yavaşca görünən animasiya */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Home button üçün stil */
+        .home-button {
+            display: inline-block;
+            margin: 20px auto;
+            padding: 10px 20px;
+            font-size: 18px;
+            background: linear-gradient(90deg, #6fa8dc, #4c66a4); 
+            color: #fff;
+            text-decoration: none;
+            border-radius: 30px;
+            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+            transition: all 0.4s ease;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            max-width: 150px;
+            z-index: 1;
+        }
+
+        .home-button i {
+            transition: transform 0.4s ease;
+        }
+
+        .home-button:hover {
+            background: linear-gradient(90deg, #4c66a4, #6fa8dc); 
+            transform: scale(1.05);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .home-button:hover i {
+            transform: rotate(360deg);
+        }
+
+        .home-button i {
+            margin-right: 8px;
+        }
+    </style>
+    <!-- FontAwesome daxil edirik sosial media iconları üçün -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+
+    <!-- Home düyməsi -->
+    <a href="{% url 'web:index' %}" class="home-button">
+        <i class="fas fa-home"></i> Home
+    </a>
+
+    <div class="form-container">
+        <h3>Send Mail</h3>
+        <!-- enctype əlavə edilib şəkilləri yükləmək üçün -->
+        <form action="{% url 'web:send-mail' %}" method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <input type="text" id="to" name="to"  placeholder="To">
+            <input type="text" id="subject" name="subject"  placeholder="Subject">
+            <input type="text" id="body" name="body" placeholder="Message">
+            <!-- Şəkillərin seçilməsi üçün file input əlavə edildi -->
+            <label for="images">Select Images</label>
+            <input type="file" id="images" name="images" multiple>  <!-- Bir neçə şəkil üçün multiple -->
+            <button type="submit" id="submit-button" disabled>Send</button>
+        </form>
+    </div>
+
+    <!-- Sosial media iconları -->
+    <div class="social-icons">
+        <a href="https://www.instagram.com/" target="_blank"><i class="fab fa-instagram"></i></a>
+        <a href="https://telegram.org/" target="_blank"><i class="fab fa-telegram"></i></a>
+        <a href="https://www.facebook.com/" target="_blank"><i class="fab fa-facebook"></i></a>
+    </div>
+
+    <script>
+        const toInput = document.getElementById('to');
+        const subjectInput = document.getElementById('subject');
+        const bodyInput = document.getElementById('body');
+        const submitButton = document.getElementById('submit-button');
+
+        function checkForm() {
+            if (toInput.value.trim() !== '' && subjectInput.value.trim() !== '' && bodyInput.value.trim() !== '') {
+                submitButton.disabled = false;
+                submitButton.classList.add('active');
+            } else {
+                submitButton.disabled = true;
+                submitButton.classList.remove('active');
+            }
+        }
+
+        // Bütün inputlar üçün event dinləyicisi əlavə edirik
+        toInput.addEventListener('input', checkForm);
+        subjectInput.addEventListener('input', checkForm);
+        bodyInput.addEventListener('input', checkForm);
+    </script>
+</body>
+</html>

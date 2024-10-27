@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="az">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token }}"> 
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <title>Property Detail</title>
+    {% load static %}
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #f0f4f8;
+            font-family: Arial, sans-serif;
+            color: #333;
+            font-size: 18px;
+        }
+
+        .container {
+            margin: 40px auto;
+            max-width: 800px;
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 28px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .property-details {
+            margin-top: 20px;
+        }
+
+        table {
+            width: 100%;
+            margin-bottom: 20px;
+            border-collapse: collapse;
+        }
+
+        td, th {
+            padding: 16px;
+            border-bottom: 1px solid #ccc;
+            font-family: 'Lora', serif;
+            font-size: 18px;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        .home-link {
+            position: fixed;
+            top: 10px;
+            left: 10px;
+            font-size: 20px;
+            font-weight: bold;
+            text-decoration: none;
+            color: #3498db;
+            background-color: #ecf0f1;
+            padding: 12px 18px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        .home-link:hover {
+            background-color: #3498db;
+            color: #fff;
+        }
+
+        a {
+            color: #e74c3c;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 18px;
+        }
+
+        button:hover {
+            background-color: #2980b9;
+        }
+        
+        .like-icon {
+            font-size: 24px;
+            color: grey; 
+            cursor: pointer;
+            transition: color 0.3s ease;
+            margin-right: 5px;
+        }
+
+        .like-icon.liked {
+            color: red;
+        }
+
+        .product-likes {
+            text-align: center;
+            font-size: 20px;
+        }
+
+        #like-count {
+            font-size: 20px;
+            vertical-align: middle;
+        }
+
+        .slider-container {
+            position: relative;
+            max-width: 100%;
+            margin: 0 auto;
+            overflow: hidden;
+        }
+
+        .slider {
+            display: flex;
+            transition: transform 0.5s ease-in-out;
+        }
+
+        .slider img {
+            width: 100%;
+            height: auto;
+            border-radius: 10px;
+        }
+
+        .prev, .next {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background-color: rgba(0, 0, 0, 0.5);
+            color: white;
+            padding: 10px;
+            cursor: pointer;
+            border: none;
+            font-size: 18px;
+        }
+
+        .prev {
+            left: 10px;
+        }
+
+        .next {
+            right: 10px;
+        }
+    </style>
+</head>
+<body>
+    <a href="{% url 'web:index' %}" class="home-link">Home</a>
+
+    <div class="container">
+        {% if object.status == "REJECTED" %}
+            <h1 style="background-color: #eb5b34; text-align: center;">Sizin elan ləğv olunub</h1>
+        {% elif object.status == "PENDING" %}
+            <h1 style="background-color: #ebe534; color: black; text-align: center;">Sizin elan moderasiyadan keçir</h1>
+        {% endif %}
+
+        <h2>{{ property.title }}</h2>
+
+        <div class="slider-container">
+            <div class="slider">
+                {% for image in property.images.all %}
+                    <img src="{{ image.img.url }}" alt="property image">
+                {% endfor %}
+            </div>
+            <button class="prev" onclick="moveSlider(-1)">&#10094;</button>
+            <button class="next" onclick="moveSlider(1)">&#10095;</button>
+        </div>
+
+        <div class="property-details">
+            <table>
+                <tr>
+                    <td>Title</td>
+                    <td>{{ property.title }}</td>
+                </tr>
+                <tr>
+                    <td>Description</td>
+                    <td>{{ property.description }}</td>
+                </tr>
+                <tr>
+                    <td>Price</td>
+                    <td>{{ property.price }}</td>
+                </tr>
+                <tr>
+                    <td>City</td>
+                    <td>{{ property.city }}</td>
+                </tr>
+                <tr>
+                    <td>Address</td>
+                    <td>{{ property.address }}</td>
+                </tr>
+                <tr>
+                    <td>Created at</td>
+                    <td>{{ property.created_at }}</td>
+                </tr>
+            </table>
+
+            <a href="/delete-property/{{ property.pk }}/" style="color: red;">Delete</a>
+        </div>
+
+        <p class="product-likes" style="text-align: center;">
+            <i class="fa fa-heart like-icon {% if user_liked %}liked{% endif %}" data-id="{{ property.id }}"></i>
+            <span id="like-count-{{ property.id }}">{{ property.total_likes }}</span>
+        </p> 
+        
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const csrftoken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+    
+            document.querySelectorAll('.like-icon').forEach(likeIcon => {
+                likeIcon.addEventListener('click', function(event) {
+                    event.preventDefault();
+                    const propertyId = this.getAttribute('data-id');
+                    
+                    fetch(`/like/${propertyId}/`, {
+                        method: 'POST',
+                        headers: {
+                            'X-CSRFToken': csrftoken, 
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            property_id: propertyId
+                        }),
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.liked) {
+                            this.classList.add('liked');
+                        } else {
+                            this.classList.remove('liked');
+                        }
+                        document.getElementById(`like-count-${propertyId}`).textContent = data.total_likes;
+                    })
+                    .catch(error => console.error('Sorğu zamanı xəta:', error));
+                });
+            });
+        });
+    </script>
+</body>
+</html>

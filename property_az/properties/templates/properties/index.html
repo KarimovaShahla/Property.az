@@ -1,0 +1,349 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token }}">
+    <title>MY PROPERTY.AZ</title>
+    <link rel="icon" type="image/x-icon" href="{% static 'icons/Fav_icon_home.png' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+        }
+    
+        /* Hero section (Xoş gəlmisiz mətni olan hissə) */
+        .hero {
+            height: 100vh; /* Tam ekran yüksəkliyi */
+            background: url("{% static 'uploads/backround photo.jpeg' %}") no-repeat center center fixed;
+            background-size: cover;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            text-align: center;
+            position: relative;
+        }
+    
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.4); /* Qaranlıq örtük */
+            z-index: 0;
+        }
+    
+        .hero h1 {
+            font-size: 60px;
+            text-transform: uppercase;
+            letter-spacing: 5px;
+            font-family: 'Playfair Display', serif;
+            font-weight: 700;
+            color: white;
+            text-shadow: 2px 4px 6px rgba(0, 0, 0, 0.3);
+            line-height: 1.2; /* Mətn sətirləri arasında məsafə */
+            margin: 0;
+            padding: 20px;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.3); /* Mətnin altına incə xətt */
+            display: inline-block;
+
+        }
+    
+        /* Navbar */
+        .navbar {
+            display: flex;
+            justify-content: center;
+            gap: 15px; /* Keçidlər arasında boşluq */
+            padding: 10px;
+            background-color: rgba(0, 0, 0, 0.5); /* Yarı şəffaf fon */
+            position: fixed; /* Sabit navbar */
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+        }
+    
+        .nav-link {
+            padding: 10px 20px;
+            background-color: rgba(52, 152, 219, 0.8); /* Düymələr üçün fon rəngi */
+            color: white;
+            border-radius: 25px; /* Oval forma */
+            text-decoration: none;
+            font-weight: bold;
+            transition: background-color 0.3s ease;
+        }
+    
+        .nav-link:hover {
+            background-color: rgba(41, 128, 185, 0.8); /* Hover zamanı rəng dəyişikliyi */
+        }
+    
+        /* Kateqoriya bölümü */
+        .category-container {
+            margin-top: 50px;
+            padding: 50px 0;
+            text-align: center;
+            background-color: #f0f0f0;
+        }
+    
+        .category-list {
+            display: flex; /* Kateqoriyaların yan-yana olmasını təmin edir */
+            flex-wrap: wrap; /* Ekran daralanda sətirdən çıxma */
+            gap: 20px; /* Kateqoriyalar arasında boşluq */
+            padding: 0;
+            list-style-type: none; /* Kateqoriyaların güllələrini silir */
+            justify-content: center; /* Kateqoriyaları mərkəzə düzür */
+        }
+    
+        .category-item {
+            background-color: #3498db; /* Kateqoriya kartlarının arxa fonu (tünd mavi) */
+            color: white; /* Mətn rəngi ağ */
+            border: 1px solid #ddd;
+            border-radius: 16px; /* Daha çox oval kənarlar */
+            padding: 16px;
+            width: 280px; /* Kateqoriya kartlarının eni */
+            text-align: center;
+            font-size: 16px;
+            font-weight: bold;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+    
+        .subcategory-list {
+            list-style-type: none;
+            padding: 0;
+        }
+    
+        .subcategory-list a {
+            color: #f5f5f5; /* Sub-kateqoriya linkləri üçün ağ rəng */
+            text-decoration: none;
+        }
+    
+        .subcategory-list a:hover {
+            text-decoration: underline;
+        }
+    
+        /* Elanlar bölümü */
+        .content-section {
+            background-color: #eaeaea; /* Açı boz fon rəngi */
+            padding: 50px 20px;
+            text-align: center;
+        }
+    
+        .container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
+        }
+    
+        .property-card {
+            width: 300px;
+            border: 1px solid #ddd;
+            border-radius: 16px; /* Elan kartları üçün daha oval kənarlar */
+            overflow: hidden;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            transition: box-shadow 0.3s ease;
+            background-color: #fff;
+        }
+    
+        .property-card:hover {
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        }
+    
+        .property-image img {
+            width: 100%;
+            height: auto;
+            max-height: 180px;
+            object-fit: cover;
+        }
+    
+        .property-details {
+            padding: 16px;
+        }
+    
+        .property-title {
+            font-size: 22px;
+            font-weight: bold;
+            margin: 0 0 8px;
+        }
+    
+        .property-location {
+            font-size: 14px;
+            color: #666;
+            margin: 0 0 12px;
+        }
+    
+        .property-price {
+            font-size: 18px;
+            color: #27ae60;
+            font-weight: bold;
+            margin: 0 0 12px;
+        }
+    
+        .property-link {
+            display: inline-block;
+            padding: 8px 12px;
+            background-color: #3498db;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 4px;
+            transition: background-color 0.3s ease;
+        }
+    
+        .property-link:hover {
+            background-color: #2980b9;
+
+
+        }
+
+        .like-icon {
+            font-size: 20px;
+            color: #666; /* Ürək işarəsinin ilkin rəngi */
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+        .liked {
+           color: red; /* Hover etdikdə qırmızı olsun */
+           transform: scale(1.2);
+        }
+
+        @keyframes pop {
+            0% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.4); /* Like edildikdə daha böyük ölçü */
+            }
+            100% {
+                transform: scale(1.2); /* Nəticə olaraq bir az böyük ölçü */
+            }
+        }
+
+
+
+
+        .like-icon.liked {
+            animation: pop 0.3s ease;
+        }
+
+       
+       
+    </style>
+    
+</head>
+<body>
+
+    <!-- Navbar -->
+    <nav class="navbar">
+        <a href="{% url 'web:index' %}" class="nav-link">Home</a>
+        <a href="{% url 'web:create-property' %}" class="nav-link">+Add property</a>
+        <a href="{% url 'web:send-mail' %}" class="nav-link">Contact Us</a>  
+        <a href="{% url 'web:login' %}"  class="nav-link">Login</a>  
+        {% if request.user.is_authenticated %}
+        <!-- <a href="#" class="nav-link">Çıxış</a> -->
+        <a href="{% url 'web:user-properties' user.id%}" class="nav-link">My properties</a>
+        {% else %}
+        <a href="{% url 'web:login' %}"  class="nav-link">Register</a>
+        {% endif %}
+    </nav>
+
+    <!-- Hero Section (Xoş Gəlmisiz mətni) -->
+    <div class="hero">
+        <h1>WELCOM TO SITE!</h1>
+    </div>
+
+    <!-- Kateqoriyalar bölümü -->
+    <div class="category-container">
+        <ul class="category-list">
+            {% for category in categories %}
+            <li class="category-item">
+                <span>
+                    <img src="{{ category.icon.url }}" alt="{{ category.name }}" width="30px">
+                    {{ category.name }}
+                </span>
+                <ul class="subcategory-list">
+                    {% for subcategory in category.get_subcategories %}
+                    <li>
+                        <a href="{% url 'web:category-properties' subcategory.id %}">
+                        {{ subcategory.name }}
+                        </a>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <!-- Elanlar bölümü -->
+    <div class="content-section">
+        <h2>Properties</h2>
+        <div class="container">
+            {% for property in properties %}
+            <a href="{{ property.get_absolute_url }}" style="text-decoration: none; color: black;">
+                <div class="property-card">
+                    <div class="property-image">
+                        <img src="{{ property.get_thumbnail_image_url }}" alt="{{ property.name }}" class="category-image">
+                    </div>
+                    <div class="property-details">
+                        <h3 class="property-title">{{ property.title }}</h3>
+                        <p class="product-description">{{ property.description }}</p>
+                        <p class="property-price">{{ property.price }} $</p>
+                        <p class="product-created-at">{{ property.created_at }}</p>
+                        <p class="product-likes">
+                            <i class="far fa-heart like-icon {% if property.id in liked_properties %}fas liked{% else %}far{% endif %}" data-id="{{ property.id }}"></i> 
+                            <span id="like-count-{{ property.id }}">{{ property.total_likes }}</span>
+                        </p>
+
+                    </div>
+                </div>
+            </a>
+            {% endfor %}
+        </div>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const csrftoken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+            
+            const likeIcons = document.querySelectorAll('.like-icon');
+            
+            likeIcons.forEach(icon => {
+                icon.addEventListener('click', function(event) {
+                    event.preventDefault();
+                    const propertyId = this.getAttribute('data-id');
+                    
+                    fetch(`/like/${propertyId}/`, {
+                        method: 'POST',
+                        headers: {
+                            'X-CSRFToken': csrftoken, 
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            property_id: propertyId
+                        }),
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.liked) {
+                            this.classList.remove('far');
+                            this.classList.add('fas', 'liked');
+                        } else {
+                            this.classList.remove('fas', 'liked');
+                            this.classList.add('far');
+                        }
+                        document.getElementById(`like-count-${propertyId}`).textContent = data.total_likes;
+                    })
+                    .catch(error => console.error('Sorğu zamanı xəta:', error));
+                });
+            });
+        });
+    </script>
+ 
+
+</body>
+</html>

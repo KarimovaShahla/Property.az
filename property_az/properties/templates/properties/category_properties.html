@@ -1,0 +1,175 @@
+{% load static %}<!DOCTYPE html>
+<html lang="az">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ category.name }}</title>
+
+    <!-- Google Fonts bağlantıları -->
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600&family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+
+    <style>
+        /* Ümumi səhifə stili */
+        body {
+            margin: 0;
+            font-family: 'Roboto', sans-serif; /* Mətn üçün modern font */
+            background-image: url("{% static 'uploads/image_not.jpg' %}"); /* Arxa fon üçün şəkil */
+            background-size: cover;
+            background-position: center;
+            color: #2c3e50; /* Tünd yazı rəngi */
+        }
+
+        /* Başlıq stili */
+        h1 {
+            font-family: 'Playfair Display', serif; /* Başlıq üçün zərif serif fontu */
+            font-size: 48px; /* Başlıq daha böyük oldu */
+            margin: 40px 0; /* Yuxarı-aşağı margin artırıldı */
+            text-align: center;
+            color: #ffffff; /* Ağ rəngli başlıq */
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5); /* Gölgə effekti */
+        }
+
+        /* Yuxarıdakı düymə stili */
+        .nav-buttons {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .nav-buttons a {
+            margin-right: 20px;
+            background-color: #3498db;
+            color: #fff;
+            text-decoration: none;
+            padding: 15px 30px; /* Düymələrin ölçüsü artırıldı */
+            border-radius: 30px; /* Oval forma üçün artırıldı */
+            font-size: 20px; /* Yazı boyutu böyüdüldü */
+            transition: background-color 0.3s ease, transform 0.3s ease; /* Hərəkətlilik effekti */
+            display: inline-block;
+            margin-bottom: 10px;
+        }
+
+        .nav-buttons a:hover {
+            background-color: #2980b9;
+            transform: scale(1.05); /* Düymələrdə hover zamanı böyümə effekti */
+        }
+
+        .nav-buttons a:active {
+            transform: scale(0.95); /* Klik edərkən düymə bir az kiçilsin */
+        }
+
+        /* Kartların stili */
+        .card-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 30px; /* Kartlar arasında məsafə artırıldı */
+            padding: 20px;
+        }
+
+        .property-card {
+            width: 320px; /* Kart genişliyi artırıldı */
+            border: 1px solid #ddd;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2); /* Daha dərin kölgə effekti */
+            transition: box-shadow 0.3s ease, transform 0.3s ease;
+            background-color: #fff;
+        }
+
+        .property-card:hover {
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+            transform: translateY(-7px); /* Hover zamanı kartın yuxarı qalxma effekti */
+        }
+
+        .property-details {
+            padding: 20px; /* İçəri boşluq artırıldı */
+        }
+
+        .property-title {
+            font-family: 'Playfair Display', serif; /* Kart başlıqları üçün də Playfair Display */
+            font-size: 24px; /* Başlıq yazısı böyüdüldü */
+            font-weight: bold;
+            color: #3498db; /* Mavi başlıq */
+            margin: 0 0 12px;
+        }
+
+        .product-description {
+            font-family: 'Roboto', sans-serif; /* Oxunaqlı Roboto fontu */
+            font-size: 18px; /* Mətn boyutu böyüdüldü */
+            color: #3498db; /* Mətn üçün mavi */
+            margin-bottom: 12px;
+        }
+
+        .product-price {
+            font-family: 'Roboto', sans-serif;
+            font-size: 20px; /* Qiymət yazısı böyüdüldü */
+            color: #27ae60;
+            margin-bottom: 12px;
+        }
+
+        /* Read More düyməsi */
+        .add-to-cart-btn {
+            background-color: #2ecc71;
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 25px; /* Oval forma */
+            font-size: 18px; /* Yazı boyutu artırıldı */
+            cursor: pointer;
+            text-align: center;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+        }
+
+        .add-to-cart-btn:hover {
+            background-color: #27ae60;
+            transform: scale(1.05); /* Hover zamanı düymə böyüsün */
+        }
+
+        .add-to-cart-btn:active {
+            transform: scale(0.95); /* Klik zamanı düymə bir az kiçilsin */
+        }
+
+        /* Elan yoxdur mesajı üçün stil */
+        .no-properties {
+            font-family: 'Playfair Display', serif; /* Mesaj üçün fərqli font */
+            text-align: center;
+            font-size: 26px; /* Mətn boyutu böyüdüldü */
+            font-weight: bold; /* Mətn bold edildi */
+            color: #ffffff; /* Yazı ağ rəngə dəyişdirildi */
+            background-color: rgba(0, 0, 0, 0.5); /* Şəffaf qara fon */
+            padding: 10px; /* İçəri boşluq əlavə edildi */
+            border-radius: 8px; /* Künclər yuvarlaqlaşdırıldı */
+            margin-top: 40px;
+            display: inline-block; /* Mətnin ortada olması üçün */
+        }
+    </style>
+</head>
+<body>
+
+    <h1>{{ category.name }}</h1>
+
+    <div class="nav-buttons">
+        <a href="{% url 'web:index' %}">Home</a>
+        <a href="{% url 'web:create-property' %}">+Add property</a>
+    </div>
+
+    <div class="card-container">
+        {% for property in properties %}
+        <a href="{{ property.get_absolute_url }}" style="text-decoration: none; color: inherit;">
+            <div class="property-card">
+                <div class="property-details">
+                    <h3 class="property-title">{{ property.title }}</h3>
+                    <p class="product-description">{{ property.description }}</p>
+                    <p class="product-price">{{ property.price }} $</p>
+                    <p class="product-created-at">{{ property.created_at }}</p>
+                    <button class="add-to-cart-btn">Read More</button>
+                </div>
+            </div>
+        </a>
+        {% empty %}
+        <p class="no-properties">'{{ category.name }}' there are no ads in this category</p>
+        {% endfor %}
+    </div>
+
+</body>
+</html>
